@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Nikunj Singh | AI/ML Engineer · Full Stack Creator</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -203,6 +204,9 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
+        .skill-tag:active {
+            transform: scale(0.96);
+        }
 
         /* project cards modern */
         .project-grid {
@@ -358,8 +362,8 @@
         <!-- Profile Section -->
         <div class="profile">
             <div class="img-container">
-                <!-- YOUR LOCAL PROFILE PICTURE PATH -->
-                <img src="D:\NIK.WEB\WhatsApp Image 2026-04-11 at 10.27.49.jpeg" 
+                <!-- PROFILE PICTURE PATH -->
+                <img src="WhatsApp Image 2026-04-11 at 10.27.49.jpeg" 
                      alt="Nikunj Singh" class="profile-img" id="profilePic">
                 <div class="status-dot"></div>
             </div>
@@ -389,8 +393,8 @@
         <div class="section">
             <h2><i class="fas fa-code"></i> Technical Arsenal</h2>
             <div class="skill-grid">
-                <span class="skill-tag">Python (pasic)</span>
-                <span class="skill-tag">Full Stack Web </span>
+                <span class="skill-tag">Python (Basic)</span>
+                <span class="skill-tag">Full Stack Web</span>
                 <span class="skill-tag">HTML5/CSS3/JS/React</span>
                 <span class="skill-tag">Node.js · Express</span>
                 <span class="skill-tag">MongoDB · Firebase</span>
@@ -463,35 +467,11 @@
     const profileImg = document.getElementById('profilePic');
     if (profileImg) {
         profileImg.onerror = function() {
-            console.warn("Profile image not found at the specified path. Please verify the file location: D:\\NIK.WEB\\WhatsApp Image 2026-04-11 at 10.27.49.jpeg");
+            console.warn("Profile image not found. Loading fallback avatar.");
             // Optional fallback: you can set a backup avatar
-            // this.src = "https://ui-avatars.com/api/?background=0a0f1f&color=00f3ff&bold=true&size=140&name=Nikunj+Singh";
+            this.src = "https://ui-avatars.com/api/?background=0a0f1f&color=00f3ff&bold=true&size=140&name=Nikunj+Singh";
         };
     }
-    
-    // cool interactive hover effects for project cards
-    const cards = document.querySelectorAll('.project-card');
-    cards.forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            card.style.transform = `translateX(5px) translateY(-2px)`;
-            card.style.transition = '0.1s';
-        });
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = 'translateX(0px) translateY(0px)';
-        });
-    });
-    
-    // skill tags ripple effect
-    const skills = document.querySelectorAll('.skill-tag');
-    skills.forEach(tag => {
-        tag.addEventListener('click', () => {
-            tag.style.transform = 'scale(0.96)';
-            setTimeout(() => { tag.style.transform = ''; }, 150);
-        });
-    });
 </script>
 </body>
 </html>
