@@ -208,7 +208,7 @@
             transform: scale(0.96);
         }
 
-        /* project cards modern */
+        /* project cards premium */
         .project-grid {
             display: flex;
             flex-direction: column;
@@ -247,6 +247,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            flex-wrap: wrap;
         }
         .project-card p {
             color: #bcbcbc;
@@ -440,21 +441,40 @@
             <p style="font-size:0.85rem; margin-top: 12px; color:#aaa;">✨ Proven ability to lead teams, coordinate college fests, and deliver technical workshops. Aiming for product management & tech leadership roles.</p>
         </div>
 
-        <!-- Live Projects (Elevated) -->
+        <!-- Live Projects (Expanded: Business + Personal Portfolio + Fullstack) -->
         <div class="section">
             <h2><i class="fas fa-rocket"></i> Featured Live Projects</h2>
             <div class="project-grid">
+                <!-- Business profile website -->
                 <div class="project-card">
-                    <h3><i class="fas fa-mask" style="color:#00f3ff"></i> Morpheus Echo</h3>
-                    <p>Full-stack social media ecosystem — React, Node.js, MongoDB, real-time feeds, user authentication, and immersive UI.</p>
-                    <a href="https://morpheus-echo-nik.vercel.app/" target="_blank" class="project-link">Launch Project <i class="fas fa-arrow-right"></i></a>
+                    <h3><i class="fas fa-chart-simple" style="color:#ffb347"></i> DeepakMovies · Business Profile</h3>
+                    <p>Professional business portfolio for a media production house — showcases services, creative reels, and cinematic branding. Built with modern web stack for high performance.</p>
+                    <a href="https://deepakmovies.vercel.app" target="_blank" class="project-link">Visit deepakmovies.vercel.app <i class="fas fa-arrow-right"></i></a>
                 </div>
+                <!-- Personal profile: iamnik.vercel.app -->
                 <div class="project-card">
-                    <h3><i class="fas fa-comments" style="color:#39ff14"></i> Voxera</h3>
-                    <p>High-performance real-time web chat app with instant messaging, rooms, and sleek interface — powered by WebSockets.</p>
+                    <h3><i class="fas fa-user-astronaut" style="color:#00f3ff"></i> iamnik · Personal Portfolio</h3>
+                    <p>Premium personal website representing Nikunj Singh — minimalistic, interactive, with focus on AI/ML craft and full stack identity. Next-level UI/UX.</p>
+                    <a href="https://iamnik.vercel.app" target="_blank" class="project-link">Explore iamnik.vercel.app <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <!-- Personal profile: iamprem.vercel.app -->
+                <div class="project-card">
+                    <h3><i class="fas fa-crown" style="color:#39ff14"></i> iamprem · Premium Profile</h3>
+                    <p>Elegant portfolio website for Prem — blends modern aesthetics with project showcase and professional story. Fully responsive, optimized for all devices.</p>
+                    <a href="https://iamprem.vercel.app" target="_blank" class="project-link">Discover iamprem.vercel.app <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <!-- Full stack website: Morpheus Echo -->
+                <div class="project-card">
+                    <h3><i class="fas fa-mask" style="color:#00f3ff"></i> Morpheus Echo · Full Stack Social</h3>
+                    <p>Full-stack social media ecosystem — React, Node.js, MongoDB, real-time feeds, user authentication, and immersive UI. Complete digital community platform.</p>
+                    <a href="https://morpheusecho.vercel.app" target="_blank" class="project-link">Launch Morpheus Echo <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <!-- Voxera real-time chat -->
+                <div class="project-card">
+                    <h3><i class="fas fa-comments" style="color:#39ff14"></i> Voxera · Real-time Messenger</h3>
+                    <p>High-performance real-time web chat app with instant messaging, rooms, and sleek interface — powered by WebSockets. Connect with friends seamlessly.</p>
                     <a href="https://voxera-two.vercel.app" target="_blank" class="project-link">Experience Voxera <i class="fas fa-arrow-right"></i></a>
                 </div>
-                
             </div>
         </div>
 
@@ -484,16 +504,17 @@
 </div>
 
 <script>
-    // Your local profile picture is already set in the img src.
-    // If you need to force refresh or handle any loading errors, here's a small check:
+    // Profile image fallback handler (if local image not found, fallback to avatar)
     const profileImg = document.getElementById('profilePic');
     if (profileImg) {
         profileImg.onerror = function() {
             console.warn("Profile image not found. Loading fallback avatar.");
-            // Optional fallback: you can set a backup avatar
             this.src = "https://ui-avatars.com/api/?background=0a0f1f&color=00f3ff&bold=true&size=140&name=Nikunj+Singh";
         };
     }
+
+    // Optional: smooth hover effect for project links, dynamic link validations (just to keep console clean)
+    console.log("🌟 Nikunj Singh portfolio loaded — projects include DeepakMovies, iamnik, iamprem, Morpheus Echo & Voxera");
 </script>
 </body>
 </html>
