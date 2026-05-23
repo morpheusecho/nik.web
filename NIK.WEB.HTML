@@ -1,289 +1,553 @@
-import React, { useEffect, useRef } from 'react';
-import './styles/fonts.css';
-import './styles/theme.css';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Nikunj Singh | AI/ML Engineer · Full Stack Creator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-const App: React.FC = () => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const animationRef = useRef<number | null>(null);
+        body {
+            background: radial-gradient(circle at 10% 20%, #03040a, #000000);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Poppins', sans-serif;
+            color: #f0f0f0;
+            line-height: 1.5;
+            position: relative;
+            overflow-x: hidden;
+        }
 
-  // Custom fade-in/fade-out loop logic for video
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+        /* animated noise + grain overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-radial-gradient(circle at 20% 30%, rgba(0,255,200,0.02) 0px, rgba(0,0,0,0) 2px);
+            pointer-events: none;
+            z-index: 0;
+        }
 
-    const handlePlayback = () => {
-      if (!video) return;
-      const duration = video.duration;
-      const currentTime = video.currentTime;
+        /* floating glow orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .orb1 { width: 40vw; height: 40vw; background: #00f3ff; top: -20vh; left: -15vw; }
+        .orb2 { width: 50vw; height: 50vw; background: #39ff14; bottom: -30vh; right: -20vw; opacity: 0.2; }
+        .orb3 { width: 30vw; height: 30vw; background: #ff3366; top: 60%; left: 60%; opacity: 0.15; }
 
-      // Fade out logic: when less than 0.5s remaining, fade out
-      if (duration - currentTime <= 0.5) {
-        const fadeProgress = (duration - currentTime) / 0.5; // 1 to 0
-        video.style.opacity = Math.max(0, fadeProgress).toString();
-      } 
-      // Fade in logic: after reset, during first 0.5s
-      else if (currentTime <= 0.5) {
-        const fadeProgress = currentTime / 0.5; // 0 to 1
-        video.style.opacity = fadeProgress.toString();
-      } 
-      // Fully opaque during middle portion
-      else {
-        video.style.opacity = '1';
-      }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
 
-      // Check for end of video to trigger seamless reset
-      if (duration - currentTime <= 0.02 && !video.paused) {
-        video.style.opacity = '0';
-        video.pause();
-        setTimeout(() => {
-          if (video) {
-            video.currentTime = 0;
-            video.play().catch(e => console.warn('Video play error:', e));
-          }
-        }, 100);
-      }
+        /* Glassmorphism card with neon border */
+        .card {
+            background: rgba(5, 7, 12, 0.75);
+            backdrop-filter: blur(14px);
+            border-radius: 2rem;
+            padding: 2.2rem;
+            border: 1px solid rgba(0, 243, 255, 0.25);
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.6), 0 0 0 0.5px rgba(57,255,20,0.1) inset;
+            transition: all 0.3s ease;
+        }
 
-      animationRef.current = requestAnimationFrame(handlePlayback);
-    };
+        /* Profile layout modern */
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+            position: relative;
+        }
 
-    const startPlayback = () => {
-      video.play().then(() => {
-        animationRef.current = requestAnimationFrame(handlePlayback);
-      }).catch(e => console.warn('Autoplay prevented:', e));
-    };
+        .img-container {
+            position: relative;
+            width: 140px;
+            height: 140px;
+        }
+        .profile-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #39ff14;
+            box-shadow: 0 0 18px rgba(57, 255, 20, 0.4);
+            transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        .profile-img:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0 28px #00f3ff;
+            border-color: #00f3ff;
+        }
+        .status-dot {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            width: 18px;
+            height: 18px;
+            background: #39ff14;
+            border-radius: 50%;
+            border: 2px solid #000;
+            box-shadow: 0 0 8px #39ff14;
+        }
 
-    // Wait for video metadata to load
-    video.addEventListener('loadedmetadata', startPlayback);
-    // Fallback in case video is already loaded
-    if (video.readyState >= 1) {
-      startPlayback();
+        .profile h1 {
+            font-size: 2.6rem;
+            font-weight: 700;
+            background: linear-gradient(130deg, #ffffff, #00f3ff, #39ff14);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.3rem;
+            animation: shimmer 5s infinite linear;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .badge-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 10px;
+        }
+        .badge {
+            background: rgba(0, 243, 255, 0.1);
+            backdrop-filter: blur(4px);
+            padding: 0.3rem 0.9rem;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 0.5px solid rgba(57, 255, 20, 0.5);
+            color: #e0ffe0;
+        }
+        .badge i {
+            margin-right: 6px;
+            font-size: 0.75rem;
+        }
+        .badge-highlight {
+            background: rgba(57, 255, 20, 0.2);
+            border-color: #39ff14;
+            color: #cdffb2;
+        }
+
+        /* sections style */
+        .section {
+            margin: 2rem 0;
+        }
+        .section h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            letter-spacing: -0.2px;
+            background: linear-gradient(135deg, #ccc, #fff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 3px solid #00f3ff;
+            padding-left: 14px;
+            margin-bottom: 1rem;
+        }
+        .section h2 i {
+            color: #39ff14;
+            background: none;
+            -webkit-background-clip: unset;
+            background-clip: unset;
+            color: #39ff14;
+        }
+
+        .skill-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+            margin-top: 0.6rem;
+        }
+        .skill-tag {
+            background: rgba(15, 25, 35, 0.7);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            padding: 0.45rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #eef5ff;
+            transition: all 0.2s;
+        }
+        .skill-tag:hover {
+            border-color: #39ff14;
+            background: rgba(57, 255, 20, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .skill-tag:active {
+            transform: scale(0.96);
+        }
+
+        /* project cards premium */
+        .project-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+        .project-card {
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(4px);
+            border-radius: 1.5rem;
+            padding: 1.4rem 1.6rem;
+            border: 1px solid rgba(57, 255, 20, 0.2);
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, #00f3ff, #39ff14);
+            border-radius: 8px 0 0 8px;
+        }
+        .project-card:hover {
+            transform: translateX(8px);
+            border-color: rgba(0, 243, 255, 0.6);
+            background: rgba(10, 20, 30, 0.7);
+            box-shadow: 0 10px 25px -10px rgba(0,243,255,0.2);
+        }
+        .project-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .project-card p {
+            color: #bcbcbc;
+            font-size: 0.9rem;
+        }
+        .project-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 1rem;
+            color: #39ff14;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.85rem;
+            border-bottom: 1px dashed #39ff14;
+            transition: 0.2s;
+        }
+        .project-link i {
+            font-size: 0.8rem;
+        }
+        .project-link:hover {
+            color: #00f3ff;
+            gap: 12px;
+            border-bottom-color: #00f3ff;
+        }
+
+        /* button group premium */
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.2rem;
+            margin: 2rem 0 1rem;
+        }
+        .btn {
+            padding: 0.7rem 1.6rem;
+            border-radius: 60px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.25s;
+            font-size: 0.9rem;
+            background: rgba(10, 10, 20, 0.6);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.15);
+            cursor: pointer;
+            color: #f0f0f0;
+        }
+        .btn i {
+            font-size: 1rem;
+        }
+        .btn-instagram { border-color: #ff3366; color: #ff90b5; }
+        .btn-instagram:hover { background: #ff3366; color: black; border-color: #ff3366; box-shadow: 0 0 12px #ff3366; }
+        .btn-linkedin { border-color: #0A66C2; color: #8ac4ff; }
+        .btn-linkedin:hover { background: #0A66C2; color: white; border-color: #0A66C2; box-shadow: 0 0 12px #0A66C2; }
+        .btn-email { border-color: #00f3ff; color: #a0f5ff; }
+        .btn-email:hover { background: #00f3ff; color: #000; border-color: #00f3ff; box-shadow: 0 0 14px #00f3ff; }
+        .btn-ngl { border-color: #39ff14; color: #c0ffb0; }
+        .btn-ngl:hover { background: #39ff14; color: black; border-color: #39ff14; box-shadow: 0 0 14px #39ff14; }
+
+        .footer {
+            margin-top: 2rem;
+            padding-top: 1.2rem;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #6c7a89;
+            border-top: 1px solid rgba(57, 255, 20, 0.2);
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* Tablet layout tweaks */
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .card { padding: 1.5rem; }
+            .profile { flex-direction: column; text-align: center; gap: 1.2rem; }
+            .profile h1 { font-size: 2.2rem; }
+            .badge-group, .info-row { justify-content: center; }
+            .section h2 { 
+                justify-content: center; 
+                border-left: none; 
+                border-bottom: 1px solid rgba(0, 243, 255, 0.4); 
+                padding-bottom: 8px; 
+                padding-left: 0; 
+            }
+        }
+
+        /* Deep mobile optimization */
+        @media (max-width: 480px) {
+            .container { padding: 0.5rem; }
+            .card { padding: 1.2rem; border-radius: 1.5rem; }
+            .img-container { width: 115px; height: 115px; }
+            .profile h1 { font-size: 1.85rem; line-height: 1.2; margin-bottom: 0.5rem; }
+            .badge { font-size: 0.75rem; padding: 0.25rem 0.75rem; }
+            .skill-tag { font-size: 0.75rem; padding: 0.4rem 0.9rem; }
+            .project-card { padding: 1.2rem; }
+            .project-card h3 { font-size: 1.15rem; }
+            .project-card p { font-size: 0.85rem; }
+            .button-group { flex-direction: column; width: 100%; gap: 0.8rem; margin: 1.5rem 0 0.5rem; }
+            .btn { width: 100%; justify-content: center; padding: 0.85rem; font-size: 0.95rem; }
+            .footer { flex-direction: column; gap: 1rem; font-size: 0.8rem; padding-bottom: 0.5rem; }
+        }
+
+        ::selection {
+            background: #39ff14;
+            color: #000;
+        }
+
+        .info-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+        .info-chip {
+            background: rgba(0,0,0,0.4);
+            border-radius: 40px;
+            padding: 0.2rem 1rem;
+            font-size: 0.8rem;
+            border: 0.5px solid rgba(0,243,255,0.3);
+        }
+    </style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<div class="container">
+    <div class="card">
+        <!-- Profile Section -->
+        <div class="profile">
+            <div class="img-container">
+                <!-- PROFILE PICTURE PATH -->
+                <img src="WhatsApp Image 2026-04-11 at 10.27.49.jpeg" 
+                     alt="Nikunj Singh" class="profile-img" id="profilePic">
+                <div class="status-dot"></div>
+            </div>
+            <div>
+                <h1>Nikunj Singh</h1>
+                <div class="badge-group">
+                    <span class="badge"><i class="fas fa-microchip"></i> B.Tech AIML · 2nd Year</span>
+                    <span class="badge badge-highlight"><i class="fas fa-university"></i> BVCOE, Delhi</span>
+                    <span class="badge"><i class="fas fa-school"></i> VIS, IP Extension</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-chip"><i class="fas fa-map-marker-alt"></i> New Delhi, India</span>
+                    <span class="info-chip"><i class="far fa-calendar-alt"></i> Open for internships / management</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Education + About with style -->
+        <div class="section">
+            <h2><i class="fas fa-graduation-cap"></i> Academic Journey</h2>
+            <p style="font-weight: 400;"><span style="color:#39ff14;">✦ Bharati Vidyapeeth's College of Engineering</span> — B.Tech in Artificial Intelligence & Machine Learning (AIML) · 2nd Year <br>
+            <span style="color:#00f3ff;">✦ Schooling:</span> Vivekanand International School (VIS), IP Extension, Delhi (CBSE | 2024 Batch). <br>
+            Passionate about building digital experiences, AI-driven tools, and creative leadership.</p>
+        </div>
+
+        <!-- Technical Skills (Premiere Pro removed) -->
+        <div class="section">
+            <h2><i class="fas fa-code"></i> Technical Arsenal</h2>
+            <div class="skill-grid">
+                <span class="skill-tag">Python (Basic)</span>
+                <span class="skill-tag">Full Stack Web</span>
+                <span class="skill-tag">HTML5/CSS3/JS/React</span>
+                <span class="skill-tag">Node.js · Express</span>
+                <span class="skill-tag">MongoDB · Firebase</span>
+                <span class="skill-tag">AutoCAD · 3D Design</span>
+                <span class="skill-tag">C / C++ (DSA Basics)</span>
+                <span class="skill-tag">OOPs · Data Structures</span>
+                <span class="skill-tag">Video Editing</span>
+            </div>
+        </div>
+
+        <!-- Soft Skills & Management Interest -->
+        <div class="section">
+            <h2><i class="fas fa-brain"></i> Leadership & Soft Power</h2>
+            <div class="skill-grid">
+                <span class="skill-tag"><i class="fas fa-chalkboard-user"></i> Team Management</span>
+                <span class="skill-tag"><i class="fas fa-users"></i> Public Speaking</span>
+                <span class="skill-tag"><i class="fas fa-chart-line"></i> Strategic Presentations</span>
+                <span class="skill-tag"><i class="fas fa-tasks"></i> Project Coordination</span>
+                <span class="skill-tag"><i class="fas fa-handshake"></i> Management Roles (Core Interest)</span>
+            </div>
+            <p style="font-size:0.85rem; margin-top: 12px; color:#aaa;">✨ Proven ability to lead teams, coordinate college fests, and deliver technical workshops. Aiming for product management & tech leadership roles.</p>
+        </div>
+
+        <!-- Live Projects (Expanded: Business + Personal Portfolio + Fullstack) -->
+        <div class="section">
+            <h2><i class="fas fa-rocket"></i> Featured Live Projects</h2>
+            <div class="project-grid">
+                <!-- Business profile website -->
+                <div class="project-card">
+                    <h3><i class="fas fa-chart-simple" style="color:#ffb347"></i> DeepakMovies · Business Profile</h3>
+                    <p>Professional business portfolio for a media production house — showcases services, creative reels, and cinematic branding. Built with modern web stack for high performance.</p>
+                    <a href="https://deepakmovies.vercel.app" target="_blank" class="project-link">Visit deepakmovies.vercel.app <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <!-- Personal profile: iamnik.vercel.app -->
+                <div class="project-card">
+                    <h3><i class="fas fa-user-astronaut" style="color:#00f3ff"></i> iamnik · Personal Portfolio</h3>
+                    <p>Premium personal website representing Nikunj Singh — minimalistic, interactive, with focus on AI/ML craft and full stack identity. Next-level UI/UX.</p>
+                    <a href="https://nik7.vercel.app" target="_blank" class="project-link">Explore nik7.vercel.app <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <!-- Personal profile: iamprem.vercel.app -->
+                <div class="project-card">
+                    <h3><i class="fas fa-crown" style="color:#39ff14"></i> iamprem · Premium Profile</h3>
+                    <p>Elegant portfolio website for Prem — blends modern aesthetics with project showcase and professional story. Fully responsive, optimized for all devices.</p>
+                    <a href="https://iamprem.vercel.app" target="_blank" class="project-link">Discover iamprem.vercel.app <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <!-- Full stack website: Morpheus Echo -->
+                <div class="project-card">
+                    <h3><i class="fas fa-mask" style="color:#00f3ff"></i> Morpheus Echo · Full Stack Social</h3>
+                    <p>Full-stack social media ecosystem — React, Node.js, MongoDB, real-time feeds, user authentication, and immersive UI. Complete digital community platform.</p>
+                    <a href="https://morpheusecho.vercel.app" target="_blank" class="project-link">Launch Morpheus Echo <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <!-- Voxera real-time chat -->
+                <div class="project-card">
+                    <h3><i class="fas fa-comments" style="color:#39ff14"></i> Voxera · Real-time Messenger</h3>
+                    <p>High-performance real-time web chat app with instant messaging, rooms, and sleek interface — powered by WebSockets. Connect with friends seamlessly.</p>
+                    <a href="https://voxera-two.vercel.app" target="_blank" class="project-link">Experience Voxera <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <!-- Wattzen -->
+                <div class="project-card">
+                    <h3><i class="fas fa-bolt" style="color:#ffb347"></i> Wattzen · Electronics Services</h3>
+                    <p>A dedicated platform for electronics installation services, helping users find and connect with professional electricians.</p>
+                    <a href="https://wattzen.vercel.app" target="_blank" class="project-link">Visit wattzen.vercel.app <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <!-- NikTools -->
+                <div class="project-card">
+                    <h3><i class="fas fa-tools" style="color:#00f3ff"></i> NikTools · All-in-One Web Tools</h3>
+                    <p>A versatile and free-to-use collection of web utilities designed for developers and creators. All your essential tools in one place.</p>
+                    <a href="https://niktools.vercel.app" target="_blank" class="project-link">Explore NikTools <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <!-- NexusLearnIndia -->
+                <div class="project-card">
+                    <h3><i class="fas fa-book-open" style="color:#ff3366"></i> NexusLearnIndia · EdTech Platform</h3>
+                    <p>A comprehensive educational technology platform designed to empower learners with interactive courses and digital resources.</p>
+                    <a href="https://nexuslearnindia.vercel.app" target="_blank" class="project-link">Visit nexuslearnindia.vercel.app <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <!-- ERPnik -->
+                <div class="project-card">
+                    <h3><i class="fas fa-sitemap" style="color:#39ff14"></i> ERPnik · Custom ERP Platform</h3>
+                    <p>A comprehensive and custom-built Enterprise Resource Planning (ERP) platform tailored for educational institutes to streamline campus management. <strong>*Open to sell this project*</strong>.</p>
+                    <a href="https://erpnik.vercel.app" target="_blank" class="project-link">Explore NikERP <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Freelance & Project Sales -->
+        <div class="section">
+            <h2><i class="fas fa-handshake"></i> Freelance & Project Sales</h2>
+            <div style="background: rgba(0,0,0,0.2); padding: 1.2rem; border-radius: 1rem; border: 1px solid rgba(0, 243, 255, 0.2); text-align: center;">
+                <p style="color: #d0d0d0; font-size: 0.9rem; margin-bottom: 1.2rem;">As a freelance web developer, I build custom web solutions tailored to your budget — from business portfolios and social media apps to complex ERP systems. Many projects listed here are also available for purchase.</p>
+                <a href="mailto:projects.nikunj.singh@gmail.com" class="btn btn-email"><i class="fas fa-paper-plane"></i> Discuss a Project</a>
+            </div>
+        </div>
+
+        <!-- Connect Buttons -->
+        <div class="button-group">
+            <a href="https://www.instagram.com/geralt_.7/" target="_blank" class="btn btn-instagram">
+                <i class="fab fa-instagram"></i> Instagram
+            </a>
+            <a href="https://www.linkedin.com/in/nikunj-singh-6912b2372" target="_blank" class="btn btn-linkedin">
+                <i class="fab fa-linkedin"></i> LinkedIn
+            </a>
+            <a href="mailto:nikunj.singh.2007@outlook.com" class="btn btn-email">
+                <i class="fas fa-paper-plane"></i> Email
+            </a>
+            <a href="https://ngl.link/geralt_.7" target="_blank" class="btn btn-ngl">
+                <i class="fas fa-lock"></i> Anonymous NGL
+            </a>
+        </div>
+
+        <div class="footer">
+            <span><i class="fas fa-code"></i> Full Stack Dev | AI/ML Enthusiast</span>
+            <span><i class="fas fa-map-pin"></i> Delhi, India</span>
+            <span><i class="far fa-envelope"></i> nikunj.singh.2007@outlook.com</span>
+            <span><i class="fas fa-bolt"></i> Available for freelance & campus leadership</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Profile image fallback handler (if local image not found, fallback to avatar)
+    const profileImg = document.getElementById('profilePic');
+    if (profileImg) {
+        profileImg.onerror = function() {
+            console.warn("Profile image not found. Loading fallback avatar.");
+            this.src = "https://ui-avatars.com/api/?background=0a0f1f&color=00f3ff&bold=true&size=140&name=Nikunj+Singh";
+        };
     }
 
-    return () => {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
-      video.removeEventListener('loadedmetadata', startPlayback);
-    };
-  }, []);
-
-  return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-white">
-      {/* Video Background Layer */}
-      <div className="absolute inset-0 z-0">
-        <video
-          ref={videoRef}
-          className="absolute w-full h-full object-cover"
-          style={{ top: '300px', inset: 'auto 0 0 0', opacity: 0 }}
-          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_083109_283f3553-e28f-428b-a723-d639c617eb2b.mp4"
-          muted
-          playsInline
-          loop={false}
-        />
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white via-transparent to-white" />
-      </div>
-
-      {/* Navigation Bar */}
-      <nav className="relative z-10 px-8 py-6 max-w-7xl mx-auto">
-        <div className="flex justify-between items-center">
-          {/* Logo */}
-          <div className="font-['Instrument_Serif'] text-3xl tracking-tight text-black">
-            Aethera<sup className="text-sm align-super">®</sup>
-          </div>
-          
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-8">
-            <a href="#" className="text-sm text-black transition-colors hover:text-gray-600">Home</a>
-            <a href="#" className="text-sm text-[#6F6F6F] transition-colors hover:text-black">Studio</a>
-            <a href="#" className="text-sm text-[#6F6F6F] transition-colors hover:text-black">About</a>
-            <a href="#" className="text-sm text-[#6F6F6F] transition-colors hover:text-black">Journal</a>
-            <a href="#" className="text-sm text-[#6F6F6F] transition-colors hover:text-black">Reach Us</a>
-            <button className="rounded-full px-6 py-2.5 text-sm bg-black text-white hover:scale-105 transition-transform duration-300">
-              Begin Journey
-            </button>
-          </div>
-          
-          {/* Mobile Menu Button (simplified for this component) */}
-          <div className="md:hidden">
-            <button className="text-black">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <div className="relative z-10 flex flex-col items-center justify-center text-center px-6 pb-40" style={{ paddingTop: 'calc(8rem - 75px)' }}>
-        {/* Headline */}
-        <h1 className="font-['Instrument_Serif'] text-5xl sm:text-7xl md:text-8xl max-w-7xl font-normal leading-[0.95] tracking-[-2.46px] text-black animate-fade-rise">
-          Beyond <span className="italic text-[#6F6F6F]">silence,</span> we build <span className="italic text-[#6F6F6F]">the eternal.</span>
-        </h1>
-        
-        {/* Description */}
-        <p className="text-base sm:text-lg max-w-2xl mt-8 leading-relaxed text-[#6F6F6F] animate-fade-rise-delay">
-          Building platforms for brilliant minds, fearless makers, and thoughtful souls. Through the noise, we craft digital havens for deep work and pure flows.
-        </p>
-        
-        {/* CTA Button */}
-        <button className="rounded-full px-14 py-5 text-base mt-12 bg-black text-white hover:scale-105 transition-transform duration-300 animate-fade-rise-delay-2">
-          Begin Journey
-        </button>
-      </div>
-
-      {/* Your Original Portfolio Content - Integrated Below */}
-      <div className="relative z-10 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          {/* Original Card Structure */}
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-            {/* Profile Section */}
-            <div className="p-6 md:p-8">
-              <div className="flex flex-col md:flex-row items-center gap-6 pb-6 border-b border-gray-200">
-                <div className="relative">
-                  <img 
-                    src="WhatsApp Image 2026-04-11 at 10.27.49.jpeg" 
-                    alt="Nikunj Singh" 
-                    className="w-32 h-32 rounded-full object-cover border-2 border-gray-300"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = "https://ui-avatars.com/api/?background=0a0f1f&color=00f3ff&bold=true&size=140&name=Nikunj+Singh";
-                    }}
-                  />
-                  <div className="absolute bottom-2 right-2 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
-                </div>
-                <div className="text-center md:text-left">
-                  <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
-                    Nikunj Singh
-                  </h1>
-                  <div className="flex flex-wrap justify-center md:justify-start gap-2 mt-2">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                      <i className="fas fa-microchip mr-1"></i> B.Tech AIML · 2nd Year
-                    </span>
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                      <i className="fas fa-university mr-1"></i> BVCOE, Delhi
-                    </span>
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                      <i className="fas fa-school mr-1"></i> VIS, IP Extension
-                    </span>
-                  </div>
-                  <div className="flex flex-wrap justify-center md:justify-start gap-3 mt-3">
-                    <span className="text-sm text-gray-500"><i className="fas fa-map-marker-alt mr-1"></i> New Delhi, India</span>
-                    <span className="text-sm text-gray-500"><i className="far fa-calendar-alt mr-1"></i> Open for internships / management</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Academic Journey */}
-              <div className="mt-8">
-                <h2 className="text-xl font-semibold flex items-center gap-2 border-l-4 border-gray-800 pl-3 mb-4">
-                  <i className="fas fa-graduation-cap text-gray-700"></i> Academic Journey
-                </h2>
-                <p className="text-gray-600">
-                  <span className="font-semibold text-gray-800">✦ Bharati Vidyapeeth's College of Engineering</span> — B.Tech in Artificial Intelligence & Machine Learning (AIML) · 2nd Year <br />
-                  <span className="font-semibold text-gray-800">✦ Schooling:</span> Vivekanand International School (VIS), IP Extension, Delhi (CBSE | 2024 Batch). <br />
-                  Passionate about building digital experiences, AI-driven tools, and creative leadership.
-                </p>
-              </div>
-
-              {/* Technical Skills */}
-              <div className="mt-8">
-                <h2 className="text-xl font-semibold flex items-center gap-2 border-l-4 border-gray-800 pl-3 mb-4">
-                  <i className="fas fa-code text-gray-700"></i> Technical Arsenal
-                </h2>
-                <div className="flex flex-wrap gap-2">
-                  {["Python (Basic)", "Full Stack Web", "HTML5/CSS3/JS/React", "Node.js · Express", "MongoDB · Firebase", "AutoCAD · 3D Design", "C / C++ (DSA Basics)", "OOPs · Data Structures", "Video Editing"].map(skill => (
-                    <span key={skill} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200 transition-all">
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Leadership & Soft Power */}
-              <div className="mt-8">
-                <h2 className="text-xl font-semibold flex items-center gap-2 border-l-4 border-gray-800 pl-3 mb-4">
-                  <i className="fas fa-brain text-gray-700"></i> Leadership & Soft Power
-                </h2>
-                <div className="flex flex-wrap gap-2">
-                  {["Team Management", "Public Speaking", "Strategic Presentations", "Project Coordination", "Management Roles (Core Interest)"].map(skill => (
-                    <span key={skill} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200 transition-all">
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-                <p className="text-sm text-gray-500 mt-3">✨ Proven ability to lead teams, coordinate college fests, and deliver technical workshops. Aiming for product management & tech leadership roles.</p>
-              </div>
-
-              {/* Featured Live Projects */}
-              <div className="mt-8">
-                <h2 className="text-xl font-semibold flex items-center gap-2 border-l-4 border-gray-800 pl-3 mb-4">
-                  <i className="fas fa-rocket text-gray-700"></i> Featured Live Projects
-                </h2>
-                <div className="space-y-4">
-                  {[
-                    { name: "DeepakMovies · Business Profile", desc: "Professional business portfolio for a media production house — showcases services, creative reels, and cinematic branding.", link: "https://deepakmovies.vercel.app", icon: "fa-chart-simple", color: "text-orange-500" },
-                    { name: "iamnik · Personal Portfolio", desc: "Premium personal website representing Nikunj Singh — minimalistic, interactive, with focus on AI/ML craft.", link: "https://iamnik.vercel.app", icon: "fa-user-astronaut", color: "text-cyan-500" },
-                    { name: "iamprem · Premium Profile", desc: "Elegant portfolio website for Prem — blends modern aesthetics with project showcase.", link: "https://iamprem.vercel.app", icon: "fa-crown", color: "text-green-500" },
-                    { name: "Morpheus Echo · Full Stack Social", desc: "Full-stack social media ecosystem — React, Node.js, MongoDB, real-time feeds.", link: "https://morpheusecho.vercel.app", icon: "fa-mask", color: "text-cyan-500" },
-                    { name: "Voxera · Real-time Messenger", desc: "High-performance real-time web chat app with instant messaging, rooms, and sleek interface.", link: "https://voxera-two.vercel.app", icon: "fa-comments", color: "text-green-500" },
-                    { name: "Wattzen · Electronics Services", desc: "A dedicated platform for electronics installation services.", link: "https://wattzen.vercel.app", icon: "fa-bolt", color: "text-orange-500" },
-                    { name: "NikTools · All-in-One Web Tools", desc: "A versatile collection of web utilities for developers and creators.", link: "https://niktools.vercel.app", icon: "fa-tools", color: "text-cyan-500" },
-                    { name: "NexusLearnIndia · EdTech Platform", desc: "A comprehensive educational technology platform with interactive courses.", link: "https://nexuslearnindia.vercel.app", icon: "fa-book-open", color: "text-pink-500" }
-                  ].map(project => (
-                    <div key={project.name} className="bg-gray-50 rounded-xl p-5 hover:bg-gray-100 transition-all hover:translate-x-1">
-                      <h3 className="text-lg font-semibold flex items-center gap-2">
-                        <i className={`fas ${project.icon} ${project.color}`}></i> {project.name}
-                      </h3>
-                      <p className="text-gray-600 text-sm mt-1">{project.desc}</p>
-                      <a href={project.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-3 text-gray-700 hover:text-gray-900 text-sm border-b border-gray-400">
-                        Visit project <i className="fas fa-arrow-right text-xs"></i>
-                      </a>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Freelance Section */}
-              <div className="mt-8">
-                <h2 className="text-xl font-semibold flex items-center gap-2 border-l-4 border-gray-800 pl-3 mb-4">
-                  <i className="fas fa-handshake text-gray-700"></i> Freelance & Project Sales
-                </h2>
-                <div className="bg-gray-50 rounded-xl p-6 text-center border border-gray-200">
-                  <p className="text-gray-600 mb-4">As a freelance web developer, I build custom web solutions tailored to your budget — from business portfolios and social media apps to complex ERP systems. Many projects listed here are also available for purchase.</p>
-                  <a href="mailto:projects.nikunj.singh@gmail.com" className="inline-flex items-center gap-2 bg-gray-900 text-white px-6 py-2 rounded-full hover:bg-gray-800 transition-all hover:scale-105">
-                    <i className="fas fa-paper-plane"></i> Discuss a Project
-                  </a>
-                </div>
-              </div>
-
-              {/* Connect Buttons */}
-              <div className="flex flex-wrap justify-center gap-4 mt-8">
-                <a href="https://www.instagram.com/geralt_.7/" target="_blank" className="inline-flex items-center gap-2 px-6 py-2 rounded-full border border-pink-400 text-pink-500 hover:bg-pink-500 hover:text-white transition-all">
-                  <i className="fab fa-instagram"></i> Instagram
-                </a>
-                <a href="https://www.linkedin.com/in/nikunj-singh-6912b2372" target="_blank" className="inline-flex items-center gap-2 px-6 py-2 rounded-full border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white transition-all">
-                  <i className="fab fa-linkedin"></i> LinkedIn
-                </a>
-                <a href="mailto:nikunj.singh.2007@outlook.com" className="inline-flex items-center gap-2 px-6 py-2 rounded-full border border-cyan-500 text-cyan-500 hover:bg-cyan-500 hover:text-white transition-all">
-                  <i className="fas fa-paper-plane"></i> Email
-                </a>
-                <a href="https://ngl.link/geralt_.7" target="_blank" className="inline-flex items-center gap-2 px-6 py-2 rounded-full border border-green-500 text-green-500 hover:bg-green-500 hover:text-white transition-all">
-                  <i className="fas fa-lock"></i> Anonymous NGL
-                </a>
-              </div>
-
-              {/* Footer */}
-              <div className="mt-8 pt-6 border-t border-gray-200 text-center text-sm text-gray-500 flex flex-wrap justify-center gap-4">
-                <span><i className="fas fa-code"></i> Full Stack Dev | AI/ML Enthusiast</span>
-                <span><i className="fas fa-map-pin"></i> Delhi, India</span>
-                <span><i className="far fa-envelope"></i> nikunj.singh.2007@outlook.com</span>
-                <span><i className="fas fa-bolt"></i> Available for freelance & campus leadership</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default App;
+    // Optional: smooth hover effect for project links, dynamic link validations (just to keep console clean)
+    console.log("🌟 Nikunj Singh portfolio loaded — projects include DeepakMovies, iamnik, iamprem, Morpheus Echo, Voxera, Wattzen, NikTools, NexusLearnIndia & NikERP");
+</script>
+</body>
+</html>
