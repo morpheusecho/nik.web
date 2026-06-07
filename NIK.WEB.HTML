@@ -310,6 +310,24 @@
         .btn-ngl { border-color: #39ff14; color: #c0ffb0; }
         .btn-ngl:hover { background: #39ff14; color: black; border-color: #39ff14; box-shadow: 0 0 14px #39ff14; }
 
+        /* Fixed CV Button */
+        .btn-cv {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 1000;
+            border-color: #ffb347;
+            color: #ffd194;
+            background: rgba(10, 10, 20, 0.8);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .btn-cv:hover {
+            background: #ffb347;
+            color: #000;
+            border-color: #ffb347;
+            box-shadow: 0 0 16px #ffb347;
+        }
+
         .footer {
             margin-top: 2rem;
             padding-top: 1.2rem;
@@ -337,6 +355,12 @@
                 padding-bottom: 8px; 
                 padding-left: 0; 
             }
+        .btn-cv {
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
         }
 
         /* Deep mobile optimization */
@@ -376,6 +400,7 @@
     </style>
 </head>
 <body>
+<a href="Nikunj_Singh_Resume.7june2026.pdf" download class="btn btn-cv"><i class="fas fa-file-pdf"></i> Download CV</a>
 <div class="orb orb1"></div>
 <div class="orb orb2"></div>
 <div class="orb orb3"></div>
